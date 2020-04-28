@@ -1,0 +1,46 @@
+package com.event.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.event.models.User;
+import com.event.services.UserService;
+
+@Controller
+
+public class LoginController {
+
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@RequestMapping("/logowanie")
+	public String login(Model model) {
+		User user = new User();
+		model.addAttribute("user", user);
+		return "login";
+	}
+
+	@RequestMapping("loginUser")
+	public String findUser(User user, Model model) {
+
+		User checkUser = userService.findUserByEmail(user.getEmail());
+		
+		if (checkUser != null) {
+			
+			if (passwordEncoder.matches(user.getPassword(), checkUser.getPassword())) {
+				model.addAttribute("user", user);
+				return "afterLogin";
+			}else {
+
+				return "login";
+		} 
+		}else
+		return "login";
+	}
+}
