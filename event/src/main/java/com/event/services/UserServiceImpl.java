@@ -10,7 +10,7 @@ import com.event.repository.UserRepository;
 @Service
 public class UserServiceImpl implements UserService{
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;

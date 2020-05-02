@@ -1,0 +1,60 @@
+.nav {
+	background-color: #333;
+	list-style-type: none;
+	overflow: hidden;
+	width: 100%;
+	padding: 0px;
+}
+
+.navBox {
+	float: left;
+	padding: 10px;
+}
+
+.linkButton {
+	text-decoration: none;
+	color: white;
+}
+
+.mainPage {
+	width: 50%;
+	height: 1000px;
+	background-color: #59A736;
+	float: left;
+}
+
+.leftSite {
+	width: 25%;
+	background-color: #F8F8FF;
+	height: 50%;
+	float: left;
+}
+
+.rightPage {
+	width: 25%;
+	height: 50%;
+	background-color: #F8F8FF;
+	float: left;
+}
+
+.container {
+	background-color: white;
+	height: 100%;
+	width: 100%;
+}
+
+.addEvent {
+	text-align: center;
+}
+
+.addEvent2 {
+	text-align: left;
+	height: 200px;
+	background-color: white;
+	width: auto;
+}
+
+.eventDiv {
+	background-color: red;
+	height: 100px;
+}

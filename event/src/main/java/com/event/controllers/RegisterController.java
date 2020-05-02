@@ -14,32 +14,28 @@ import com.event.services.UserService;
 public class RegisterController {
 	@Autowired
 	UserService userService;
-	
+
 	@RequestMapping("/rejestracja")
 	public String register(Model model) {
-		
+
 		User user = new User();
-		model.addAttribute("user",user);
+		model.addAttribute("user", user);
 		return "register";
 	}
-	
+
 	@RequestMapping("addUser")
 	public String addUser(User user, Model model) {
-		model.addAttribute("user",user);
-		
-	
+		model.addAttribute("user", user);
+
 		User checkUser = userService.findUserByEmail(user.getEmail());
-		
-		
-		if(checkUser==null) {
-		
-		userService.saveUser(user);
-		
-		return "afterRegister";
-		}
-		else 
+
+		if (checkUser == null) {
+
+			userService.saveUser(user);
+
+			return "login";
+		} else
 			return "register";
 	}
 
-	
 }

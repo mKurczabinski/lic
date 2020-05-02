@@ -8,6 +8,7 @@
 </head>
 <body>
 <h1>Strona logowania</h1>
+	
 	<form:form action="/loginUser" modelAttribute="user" method="post">
 		<br /> podaj email <form:input path="email" id="email"></form:input>
 
