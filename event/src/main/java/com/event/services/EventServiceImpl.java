@@ -24,7 +24,16 @@ public class EventServiceImpl implements EventService{
 	public List<Event> getCity(String miasto){
 		return eventRepository.getCity(miasto);
 	}
+	
+	@Override
+	public List<String> listOfCity(){
+		return eventRepository.listOfCity();
+	}
 
 
+	@Override
+	public void addEvent(Event event) {
+		eventRepository.save(event);
+	}
 	
 }

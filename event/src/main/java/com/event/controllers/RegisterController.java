@@ -24,8 +24,7 @@ public class RegisterController {
 	}
 
 	@RequestMapping("addUser")
-	public String addUser(User user, Model model) {
-		model.addAttribute("user", user);
+	public String addUser(User user) {
 
 		User checkUser = userService.findUserByEmail(user.getEmail());
 

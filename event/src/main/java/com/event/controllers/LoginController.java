@@ -1,5 +1,6 @@
 package com.event.controllers;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -52,7 +53,7 @@ public class LoginController {
 				
 				//show();
 				
-				return "mainPage";
+				return "redirect:/mainPage";
 			}else {
 
 				return "login";
