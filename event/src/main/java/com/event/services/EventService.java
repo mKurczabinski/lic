@@ -9,7 +9,7 @@ public interface EventService {
 	//public List<String> getCity();
 	
 	
-	public List<Event> getAll();
+	public List<Event> getAll(int off, int limit);
 	
 	public List<Event> getCity(String miasto); 
 	

@@ -11,11 +11,14 @@ import com.event.models.Event;
 import com.event.models.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer>{
+public interface UserRepository extends JpaRepository<User, Integer> {
 
-public User findByEmail(String email);
+	public User findByEmail(String email);
 
-@Query(value = "Select * from User where email like concat(:email,'%')", nativeQuery = true)
-public User getUser(@Param("email") String emial);
+	@Query(value = "Select * from User where email like concat(:email)", nativeQuery = true)
+	public User getUser(@Param("email") String emial);
+
+	@Query(value = "select * from  `user` u where exists (select 1 from friends f where user_id = u.id and send_invite = true and friend_id=:userId) ", nativeQuery = true)
+	public List<User> getfriendsInvites(@Param("userId") int id);
 
 }

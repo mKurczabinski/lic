@@ -31,7 +31,8 @@ public class LoginController {
 	EventService eventService;
 	
 	@RequestMapping("/logowanie")
-	public String login(Model model) {
+	public String login(Model model,HttpSession session) {
+		User u = (User) session.getAttribute("user");
 		User user = new User();
 		model.addAttribute("user", user);
 		return "login";

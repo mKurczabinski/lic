@@ -7,12 +7,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="pl" />
 <link rel="stylesheet" href="/resources/css/mainCSS.css">
 <title>Meet-mainPage</title>
-</head>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 </head>
 
 
@@ -20,14 +19,15 @@
 
 	<header> </header>
 
-
-
 	<ul class="nav">
 		<li class="navBox"><button type="button">Home</button></li>
 		<li class="navBox"><input type="text" placeholder="Szukaj"
 			style="padding-right: 0px"></li>
 		<li class=" navBox"><button type="button"
 				style="padding-left: 0px">Zaloguj</button></li>
+		<li class="navBox"><button class="btn btn-lg btn-primary"
+				id="submit" onclick="location.href ='/userPage'">Go To
+				Dashboard</button> <!-- <li class="navBox"> <input type="submit" value="Społeczność" name="userPage" /></li> -->
 	</ul>
 
 	<div class="container">
@@ -45,15 +45,7 @@
 				<p>
 					<input type="submit" value="filtruj" />
 			</form:form>
-
-
-			<form:form action="/User" modelAttribute="eventToSearch"
-				method="post">
-				<h1>Dodanie usera</h1>
-					<form:input path="email" id="email"></form:input>
-					<input type="submit" value="szukaj" />
-			</form:form>
-
+			<input type="submit" value="Społeczność" name="userPage" />
 
 		</div>
 
@@ -69,11 +61,8 @@
 				</c:choose>
 
 			</c:forEach>
-
-
-
-
-
+		<div id="dynData">		
+		</div>
 		</div>
 		<div class="rightPage">
 			right site
@@ -89,7 +78,6 @@
 				<!-- Modal content -->
 				<div class="addEventBox-content">
 					<span class="close">&times;</span>
-
 
 					<div class="addEvent">
 						<form:form action="/addEvent" modelAttribute="eventToAdd"
@@ -114,8 +102,6 @@
 							<br />godzina wydarzenia<form:input type="time" id="start"
 								path="date"></form:input>
 
-
-
 							<p>
 								<input type="submit" value="dodaj Event" />
 						</form:form>
@@ -125,14 +111,21 @@
 
 			</div>
 
-
 		</div>
-
 
 	</div>
 
 
 	<script>
+var offSet = 0;
+	$(window).scroll(function() {
+		   if($(window).scrollTop() + $(window).height() == $(document).height()) {
+			   offSet+=3;
+			   getEvents(offSet);
+		   }else{}
+			 //  $("#dynData").text("");}
+		});
+
 		// Get the modal
 		var addEventBox = document.getElementById("addEventBox");
 
@@ -158,14 +151,19 @@
 				addEventBox.style.display = "none";
 			}
 		}
+
+		function getEvents(offset) {
+	        $.ajax({
+	            url : '/dynLoad?offset='+offset,
+	            success : function(data, status) {
+	                    $(data).appendTo('#dynData');
+	            }
+	        });
+	    }
+
 	</script>
 
-
-
 </body>
-
-
-
 
 </html>
 

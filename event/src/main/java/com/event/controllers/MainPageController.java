@@ -3,6 +3,7 @@ package com.event.controllers;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.RequestWrapper;
 
@@ -20,6 +21,8 @@ import com.event.models.Event;
 import com.event.models.User;
 import com.event.services.EventService;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,11 +30,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Controller
+@RequestMapping("/**")
 public class MainPageController {
 
 	@Autowired
 	EventService eventService;
 
+	final int LIMIT = 3;
+	
 	@RequestMapping("/mainPage")
 	public String showMain(Model model, Event event, HttpSession session) {
 		User u = (User) session.getAttribute("user");
@@ -50,11 +56,11 @@ public class MainPageController {
 		if (session.getAttribute("searchFilter") != null) {
 			String filtr = (String) session.getAttribute("searchFilter");
 			model.addAttribute("searchFilter",filtr);
-			model.addAttribute("eventList", getListsOfEvent(filtr));
+			model.addAttribute("eventList", getListsOfEvent(filtr,model));
 			session.setAttribute("searchFilter", null);
 		}
 		else
-			model.addAttribute("eventList", getListsOfEvent(null));
+			model.addAttribute("eventList", getListsOfEvent(null,model));
 
 		return "mainPage";
 
@@ -92,15 +98,33 @@ public class MainPageController {
 		return "redirect:mainPage";
 	}
 
-	private List<Event> getListsOfEvent(String filter) {
+	private List<Event> getListsOfEvent(String filter,Model model) {
+		
+		int offset = 0;
 		if (filter == null || filter.equals("")) {
-			return eventService.getAll();
+			model.addAttribute("EventOffSet",offset);
+			
+			return eventService.getAll(offset, LIMIT);
 		} else {
 			return eventService.getCity(filter);
 		}
 
 	}
 	
+	@RequestMapping(value = "userPage")
+	public String GoToUserPage() {
+		return "redirect:User";
+	}
 	
-
+	@RequestMapping("dynLoad")
+	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response, int offset) throws IOException{
+		   response.addHeader("Content-Type", "text/html; charset=utf-8");
+	        PrintWriter pw = response.getWriter();
+	        String result = "";
+	        List<Event> lista = eventService.getAll(offset, LIMIT);
+	        for (Event e : lista) {
+	        	result += "	<div class='eventDiv'>" + e.getMiasto() + "</div>";
+	        }
+	        pw.write(result);
+	}
 }

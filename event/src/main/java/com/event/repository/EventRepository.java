@@ -15,13 +15,11 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 	@Query("Select miasto from Event")
 	  public List<String> listOfCity();
 
-	@Query(value = "Select * from Event", nativeQuery = true)
-		
-	  public List<Event> listOfAll();
+	@Query(value = "Select * from Event order by id desc limit :limit offset :off ", nativeQuery = true)
+	public List<Event> listOfAll( @Param("off") int off, @Param("limit")int limit);
 	
 	
 	@Query(value = "Select * from Event where miasto like concat(:miasto,'%')", nativeQuery = true)
-	
-	  public List<Event> getCity(@Param("miasto") String miasto);
+	public List<Event> getCity(@Param("miasto") String miasto);
 }
 

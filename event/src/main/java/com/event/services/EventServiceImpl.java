@@ -16,8 +16,8 @@ public class EventServiceImpl implements EventService{
 	private EventRepository eventRepository;
 	
 	@Override
-	public List<Event> getAll() {
-		return eventRepository.listOfAll();
+	public List<Event> getAll(int off, int limit) {
+		return eventRepository.listOfAll(off, limit);
 	}
 	
 	@Override

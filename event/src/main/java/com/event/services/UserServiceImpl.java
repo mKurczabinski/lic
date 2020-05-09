@@ -1,5 +1,7 @@
 package com.event.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User getUser(String email) {
 		return userRepository.getUser(email);
+	}
+	
+	@Override
+	public List<User> getfriendsInvites(int id) {
+		return userRepository.getfriendsInvites(id);
 	}
 	
 }
