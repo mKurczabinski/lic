@@ -30,7 +30,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Controller
-@RequestMapping("/**")
 public class MainPageController {
 
 	@Autowired

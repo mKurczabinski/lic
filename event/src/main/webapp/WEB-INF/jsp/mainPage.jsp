@@ -19,16 +19,8 @@
 
 	<header> </header>
 
-	<ul class="nav">
-		<li class="navBox"><button type="button">Home</button></li>
-		<li class="navBox"><input type="text" placeholder="Szukaj"
-			style="padding-right: 0px"></li>
-		<li class=" navBox"><button type="button"
-				style="padding-left: 0px">Zaloguj</button></li>
-		<li class="navBox"><button class="btn btn-lg btn-primary"
-				id="submit" onclick="location.href ='/userPage'">Go To
-				Dashboard</button> <!-- <li class="navBox"> <input type="submit" value="Społeczność" name="userPage" /></li> -->
-	</ul>
+
+	<%@include file="/WEB-INF/jsp/navbar.jsp"%>
 
 	<div class="container">
 		<div class="leftSite">
@@ -61,8 +53,7 @@
 				</c:choose>
 
 			</c:forEach>
-		<div id="dynData">		
-		</div>
+			<div id="dynData"></div>
 		</div>
 		<div class="rightPage">
 			right site
@@ -117,14 +108,17 @@
 
 
 	<script>
-var offSet = 0;
-	$(window).scroll(function() {
-		   if($(window).scrollTop() + $(window).height() == $(document).height()) {
-			   offSet+=3;
-			   getEvents(offSet);
-		   }else{}
-			 //  $("#dynData").text("");}
-		});
+		var offSet = 0;
+		$(window).scroll(
+				function() {
+					if ($(window).scrollTop() + $(window).height() == $(
+							document).height()) {
+						offSet += 3;
+						getEvents(offSet);
+					} else {
+					}
+					//  $("#dynData").text("");}
+				});
 
 		// Get the modal
 		var addEventBox = document.getElementById("addEventBox");
@@ -153,14 +147,13 @@ var offSet = 0;
 		}
 
 		function getEvents(offset) {
-	        $.ajax({
-	            url : '/dynLoad?offset='+offset,
-	            success : function(data, status) {
-	                    $(data).appendTo('#dynData');
-	            }
-	        });
-	    }
-
+			$.ajax({
+				url : '/dynLoad?offset=' + offset,
+				success : function(data, status) {
+					$(data).appendTo('#dynData');
+				}
+			});
+		}
 	</script>
 
 </body>
