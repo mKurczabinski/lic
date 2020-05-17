@@ -27,6 +27,16 @@ public class Event {
 	
 	private String eventRange;
 	
+	private String imageSource;
+	
+	public String getImageSource() {
+		return imageSource;
+	}
+
+	public void setImageSource(String imageSource) {
+		this.imageSource = imageSource;
+	}
+
 	@Transient
 	private String date; //Data do pobrania z formularza przy dodawaniu eventu, wykorzystana bo problem z zmianą string/date na Calendar
 	

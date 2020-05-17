@@ -64,9 +64,4 @@ public class LoginController {
 	}
 	
 	
-	
-//	public void show() {
-//		 String pawels = eventService.getCity();
-//		 String h = "k";
-//	}
 }

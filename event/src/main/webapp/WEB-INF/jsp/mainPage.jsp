@@ -48,7 +48,13 @@
 			<c:forEach var="ev" items="${eventList }">
 				<c:choose>
 					<c:when test="${ev != null}">
-						<div class="eventDiv">${ev.miasto }</div>
+						<div class="eventDiv">
+							<div class="eventDivInfo">${ev.name }${ev.miasto }
+								${ev.eventRange}</div>
+
+							<img id="imageDiv" alt="" src="uploads/${ev.imageSource }">
+
+						</div>
 					</c:when>
 				</c:choose>
 
@@ -72,29 +78,32 @@
 
 					<div class="addEvent">
 						<form:form action="/addEvent" modelAttribute="eventToAdd"
-							method="post">
-							<h1>Dodanie nowego wydarzenia</h1>
-							<br>
-							<label for="name">nazwa wydarzenia</label>
-							<form:input path="name" id="name"></form:input>
-							<br>
-							<label for="miasto">miasto</label>
-							<form:input path="miasto" id="miasto"></form:input>
-							<br>
-							<label>zasięg wydarzenia</label>
-							<br>
-							<form:radiobutton path="eventRange" value="private"
-								id="privateRange" />prywatny<br>
-							<form:radiobutton path="eventRange" value="public"
-								id="publicRange" />publiczny<br>
+							method="post" enctype="multipart/form-data">\
+							
+							<img id="imageToAdd" />
+							<div class=AddInfo>
+								<h1>Dodanie nowego wydarzenia</h1>
+								<br> <label for="name">nazwa wydarzenia</label>
+								<form:input path="name" id="name"></form:input>
+								<br> <label for="miasto">miasto</label>
+								<form:input path="miasto" id="miasto"></form:input>
+								<br> <label>zasięg wydarzenia</label> <br>
+								<form:radiobutton path="eventRange" value="private"
+									id="privateRange" />
+								prywatny<br>
+								<form:radiobutton path="eventRange" value="public"
+									id="publicRange" />
+								publiczny<br> <br />data wydarzenia
+								<form:input type="date" id="start" path="date"></form:input>
+								<br />godzina wydarzenia
+								<form:input type="time" id="start" path="date"></form:input>
 
-							<br />data wydarzenia<form:input type="date" id="start"
-								path="date"></form:input>
-							<br />godzina wydarzenia<form:input type="time" id="start"
-								path="date"></form:input>
+								<br />przeslij obrazek<input type="file" name="file"
+									accept="image/*" onchange="loadFile(event)"></input>
+								<p>
 
-							<p>
-								<input type="submit" value="dodaj Event" />
+									<input type="submit" value="dodaj Event" />
+							</div>
 						</form:form>
 					</div>
 
@@ -154,6 +163,15 @@
 				}
 			});
 		}
+
+		var loadFile = function(event) {
+			var output = document.getElementById('imageToAdd');
+			output.src = URL.createObjectURL(event.target.files[0]);
+			output.onload = function() {
+				URL.revokeObjectURL(output.src)
+			}
+		};
+	</script>
 	</script>
 
 </body>

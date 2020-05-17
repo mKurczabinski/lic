@@ -13,5 +13,7 @@ public interface UserService {
 	public User getUser(String email);
 	
 	public List<User> getfriendsInvites(int id);
+
+	List<User> listOfFriends(int userId);
 }
 

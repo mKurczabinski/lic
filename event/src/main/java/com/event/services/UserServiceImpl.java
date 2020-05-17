@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.event.models.Friends;
 import com.event.models.User;
 import com.event.repository.UserRepository;
 
@@ -36,6 +37,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<User> getfriendsInvites(int id) {
 		return userRepository.getfriendsInvites(id);
+	}
+	
+	@Override
+	public List<User> listOfFriends(int userId) {
+		return userRepository.listOfFriends(userId);
 	}
 	
 }

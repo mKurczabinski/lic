@@ -2,11 +2,13 @@ package com.event.controllers;
 
 import java.util.List;
 
+import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.RequestWrapper;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -15,13 +17,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.event.interfaces.dto.SearchParams;
 import com.event.models.Event;
 import com.event.models.User;
 import com.event.services.EventService;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,7 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Controller
-public class MainPageController {
+public class MainPageController implements HandlerExceptionResolver {
 
 	@Autowired
 	EventService eventService;
@@ -66,11 +76,26 @@ public class MainPageController {
 	}
 
 	@RequestMapping(value = "addEvent", method = RequestMethod.POST)
-	public String addEvent(Event event, HttpSession session) throws ParseException {
+	public String addEvent(Event event, HttpSession session,@RequestPart(name = "file") MultipartFile file) throws ParseException, IOException {
 
 		User addUser = (User) session.getAttribute("user");
-
-		// event.setUserId(addUser.getId()); //pobiera id usera który dodaje event, musi
+		
+		
+		File uploadDirectory = new File("uploads");
+        uploadDirectory.mkdirs();
+		
+        try {
+		File oFile = new File("uploads/" + file.getOriginalFilename());
+        OutputStream os = new FileOutputStream(oFile);
+        InputStream inputStream = file.getInputStream();
+        IOUtils.copy(inputStream, os);
+        os.close();
+        inputStream.close();
+        }
+        catch (IOException e) {
+			// TODO: handle exception
+		}
+		event.setUserId(addUser.getId()); //pobiera id usera który dodaje event, musi
 		// być zalogowany
 
 		// --------------------------CAŁA ZMIANA DATY ZE STRINGA NA DATE I Z DATE NA
@@ -81,9 +106,11 @@ public class MainPageController {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		// -------------------------------------------------------------------------------------------------------------------------------------
-
+		event.setImageSource(file.getOriginalFilename());
 		event.setEventTime(calendar);
 		eventService.addEvent(event);
+		
+		
 
 		return "redirect:mainPage";
 
@@ -125,5 +152,12 @@ public class MainPageController {
 	        	result += "	<div class='eventDiv'>" + e.getMiasto() + "</div>";
 	        }
 	        pw.write(result);
+	}
+
+	@Override
+	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception ex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

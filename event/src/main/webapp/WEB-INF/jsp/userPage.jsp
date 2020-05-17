@@ -25,17 +25,20 @@
 
 	<div class="container">
 		<div class="leftSite">
-			left site\
-			${email }
-			<form:form action="/searchUser" modelAttribute="userToSearchParam"
-				method="post">
+			left site\ ${email }
+			<form:form action="/user/searchUser"
+				modelAttribute="userToSearchParam" method="post">
 				<h1>Dodanie usera</h1>
 				<form:input path="email" id="email"></form:input>
 				<input type="submit" value="szukaj" />
 			</form:form>
 
 			<p>
-				<button id="submit" onclick="location.href ='/invite'">Zaproszenia</button>
+				<button id="submit" onclick="location.href ='/user/invite'">Zaproszenia</button>
+
+				<form:form action="/user/friends" method="post">
+					<input type="submit" value="znajomi" />
+				</form:form>
 		</div>
 
 		<div class="mainPage">
@@ -43,18 +46,28 @@
 			<c:if test="${not empty searchUserFilter}">
 			email szukanego użytkownika "${searchUserFilter }"
 				<c:choose>
+					<c:when test="${findUser.email == user.email }">
+						<p>to twoja nazwa i nie zrobisz na razie nic
+					</c:when>
 					<c:when test="${findUser eq null }">
 					nie ma takiego użytkownika
 					</c:when>
 					<c:when
 						test="${not empty findUser && friendInfo.sendInvite eq true}">
-						<form:form action="/deleteInvite" method="post">
+						<form:form action="/user/deleteInvite" method="post">
 							<p>
 								<input type="submit" value="cofnij zaproszenie" path="friendid" />
 						</form:form>
 					</c:when>
+					<c:when
+						test="${not empty findUser && friendInfo.acceptInvite eq true}">
+						<form:form action="/user/delSearchFriend" method="post">
+							<p>
+								<input type="submit" value="usuń ze znajomych" path="friendid" />
+						</form:form>
+					</c:when>
 					<c:when test="${not empty findUser}">
-						<form:form action="/inviteUser" method="post">
+						<form:form action="/user/inviteUser" method="post">
 							<p>
 								<input type="submit" value="dodaj użytkownika" path="friendid" />
 						</form:form>
@@ -75,11 +88,21 @@
 					<c:otherwise>
 						<c:forEach var="item" items="${friendList }">
 							<div>${item.email }</div>
-								
-							<a href="acceptInvite/${item.id }">zaakceptuj zaproszenie</a>
+
+							<a href="/user/acceptInvite/${item.id }">zaakceptuj
+								zaproszenie</a>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
+			</c:if>
+
+			<c:if test="${not empty listOfFriends }">
+				<h1>Twoi znajomi</h1>
+				<c:forEach var="item" items="${listOfFriends }">
+					<div>${item.email }</div>
+
+					<a href="/user/deleteFromFriends/${item.id }">usuń ze znajomychyo</a>
+				</c:forEach>
 			</c:if>
 		</div>
 

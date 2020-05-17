@@ -24,7 +24,6 @@ public class FriendsServiceImpl implements FriendsService{
 	public void deleteInvite(Friends friend) {
 		friendsRepository.delete(friend);
 	}
-	
 	@Override
 	public Friends getFriend(int userId, int friendId) {
 		return friendsRepository.getFiend(userId, friendId);
@@ -35,6 +34,15 @@ public class FriendsServiceImpl implements FriendsService{
 		friendsRepository.updateFriendSendInvite(userId, friendId);
 	}
 
+	@Override
+	public void addSecUser(int userId, int friendId) {
+		friendsRepository.addSecUser(userId, friendId);
+	}
+	
+	@Override
+	public void deleteFriend(int userId, int friendId) {
+		friendsRepository.deleteFriend(userId, friendId);
+	}
 
 
 }

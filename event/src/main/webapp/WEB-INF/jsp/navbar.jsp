@@ -7,5 +7,5 @@
 	<li class="navBox"><input type="text" placeholder="Szukaj"
 		style="padding-right: 0px"></li>
 	<li class="navBox"><button id="submit"
-			onclick="location.href ='/userPage'">Społeczność</button>
+			onclick="location.href ='/user/'">Społeczność</button>
 </ul>
