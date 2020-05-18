@@ -25,7 +25,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.event.interfaces.dto.SearchParams;
 import com.event.models.Event;
 import com.event.models.User;
+import com.event.repository.FollowEventRepository;
 import com.event.services.EventService;
+import com.event.services.FollowEventService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +47,10 @@ public class MainPageController implements HandlerExceptionResolver {
 	@Autowired
 	EventService eventService;
 
+	
+	@Autowired
+	FollowEventService followEventService;
+	
 	final int LIMIT = 3;
 	
 	@RequestMapping("/mainPage")
@@ -154,6 +160,19 @@ public class MainPageController implements HandlerExceptionResolver {
 	        pw.write(result);
 	}
 
+	@RequestMapping(value = "/user/followEvent/{followEventId}", method = RequestMethod.GET)
+	public String followEvent(@PathVariable(value = "followEventId", required = false) String followEventId,
+			HttpSession session) {
+		
+		User user = (User) session.getAttribute("user");
+
+		int EventId = Integer.valueOf(followEventId);
+		
+		followEventService.followEvent(user.getId(), EventId);
+
+		return "redirect:/user";
+	}
+	
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
@@ -161,3 +180,30 @@ public class MainPageController implements HandlerExceptionResolver {
 		return null;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

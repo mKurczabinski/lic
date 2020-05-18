@@ -49,11 +49,15 @@
 				<c:choose>
 					<c:when test="${ev != null}">
 						<div class="eventDiv">
-							<div class="eventDivInfo">${ev.name }${ev.miasto }
-								${ev.eventRange}</div>
+							<div class="eventDivInfo">${ev.name } 
+							${ev.miasto }
+							${ev.eventRange}
+							<a href="/user/followEvent/${ev.id }">obserwuj wydarzenie</a>
+							</div>
 
+							
 							<img id="imageDiv" alt="" src="uploads/${ev.imageSource }">
-
+							
 						</div>
 					</c:when>
 				</c:choose>

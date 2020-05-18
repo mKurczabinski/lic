@@ -16,19 +16,24 @@ public class Event {
 	private int id;
 
 	private String name;
-	
+
 	private String miasto;
 
 	private Calendar createTime = Calendar.getInstance();
-	
+
 	private Calendar eventTime = Calendar.getInstance();
-	
+
 	private int userId;
-	
+
 	private String eventRange;
-	
+
 	private String imageSource;
+
+	@Transient
+	private String date; // Data do pobrania z formularza przy dodawaniu eventu, wykorzystana bo problem
+							// z zmianą string/date na Calendar
 	
+
 	public String getImageSource() {
 		return imageSource;
 	}
@@ -37,11 +42,6 @@ public class Event {
 		this.imageSource = imageSource;
 	}
 
-	@Transient
-	private String date; //Data do pobrania z formularza przy dodawaniu eventu, wykorzystana bo problem z zmianą string/date na Calendar
-	
-	
-	
 	public String getDate() {
 		return date;
 	}
@@ -87,8 +87,9 @@ public class Event {
 	}
 
 	public void setMiasto(String miasto) {
-	this.miasto = miasto;
+		this.miasto = miasto;
 	}
+
 	public int getUserId() {
 		return userId;
 	}
@@ -104,8 +105,5 @@ public class Event {
 	public void setEventRange(String eventRange) {
 		this.eventRange = eventRange;
 	}
-	
-	
-	
 
 }
