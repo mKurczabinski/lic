@@ -17,5 +17,9 @@ public interface FollowEventRepository extends JpaRepository<FollowEvent, Intege
 	@Query(value = "insert into follow_event (user_id, event_id) values	(:userId, :eventId)", nativeQuery=true)
 	public void followEvent(@Param("userId") int userId, @Param("eventId") int eventId);
 	
+	@Query(value="select * from follow_event where user_id =:userId and event_id =:eventId", nativeQuery = true)
+	public FollowEvent getFollow(@Param("userId") int userId, @Param("eventId") int eventId);
 	
+	@Query(value="select count(*) from follow_event where user_id =:userId and event_id =:eventId",nativeQuery = true)
+	public int countFollow(@Param("userId") int userId, @Param("eventId") int eventId);
 }

@@ -49,15 +49,27 @@
 				<c:choose>
 					<c:when test="${ev != null}">
 						<div class="eventDiv">
-							<div class="eventDivInfo">${ev.name } 
-							${ev.miasto }
-							${ev.eventRange}
-							<a href="/user/followEvent/${ev.id }">obserwuj wydarzenie</a>
+							<div class="eventDivInfo">${ev.name }
+								${ev.miasto } ${ev.eventRange} <a
+									href="/user/followEvent/${ev.id }">
+
+								<c:forEach var="evl" items="${followList }">
+									<c:choose>
+										<c:when test="${evl.eventId eq ev.id }">
+											nie
+										</c:when>
+
+									</c:choose>
+
+
+								</c:forEach>
+
+							obserwuj wydarzenie</a>
 							</div>
 
-							
+
 							<img id="imageDiv" alt="" src="uploads/${ev.imageSource }">
-							
+
 						</div>
 					</c:when>
 				</c:choose>

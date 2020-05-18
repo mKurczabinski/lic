@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.event.models.Event;
-import com.event.models.User;
 import com.event.repository.EventRepository;
 
 @Service

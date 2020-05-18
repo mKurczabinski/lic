@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.event.interfaces.dto.SearchParams;
 import com.event.models.Event;
+import com.event.models.FollowEvent;
 import com.event.models.User;
 import com.event.repository.FollowEventRepository;
 import com.event.services.EventService;
@@ -47,12 +48,11 @@ public class MainPageController implements HandlerExceptionResolver {
 	@Autowired
 	EventService eventService;
 
-	
 	@Autowired
 	FollowEventService followEventService;
-	
+
 	final int LIMIT = 3;
-	
+
 	@RequestMapping("/mainPage")
 	public String showMain(Model model, Event event, HttpSession session) {
 		User u = (User) session.getAttribute("user");
@@ -62,50 +62,55 @@ public class MainPageController implements HandlerExceptionResolver {
 
 		SearchParams searchParams = new SearchParams();
 		model.addAttribute("eventToSearch", searchParams);
-		
 
-		//event.getMiasto();
+		model.addAttribute("user", u);
 
-		//List<String> sList = eventService.listOfCity();
+		// model.addAttribute("FollowEventList",);
+
+		// event.getMiasto();
+
+		// List<String> sList = eventService.listOfCity();
 
 		if (session.getAttribute("searchFilter") != null) {
 			String filtr = (String) session.getAttribute("searchFilter");
-			model.addAttribute("searchFilter",filtr);
-			model.addAttribute("eventList", getListsOfEvent(filtr,model));
+			model.addAttribute("searchFilter", filtr);
+			model.addAttribute("eventList", getListsOfEvent(filtr, model, session));
+
 			session.setAttribute("searchFilter", null);
-		}
-		else
-			model.addAttribute("eventList", getListsOfEvent(null,model));
+		} else
+			model.addAttribute("eventList", getListsOfEvent(null, model, session));
+
+		model.addAttribute("followList", session.getAttribute("followList"));
 
 		return "mainPage";
 
 	}
 
 	@RequestMapping(value = "addEvent", method = RequestMethod.POST)
-	public String addEvent(Event event, HttpSession session,@RequestPart(name = "file") MultipartFile file) throws ParseException, IOException {
+	public String addEvent(Event event, HttpSession session, @RequestPart(name = "file") MultipartFile file)
+			throws ParseException, IOException {
 
 		User addUser = (User) session.getAttribute("user");
-		
-		
+
 		File uploadDirectory = new File("uploads");
-        uploadDirectory.mkdirs();
-		
-        try {
-		File oFile = new File("uploads/" + file.getOriginalFilename());
-        OutputStream os = new FileOutputStream(oFile);
-        InputStream inputStream = file.getInputStream();
-        IOUtils.copy(inputStream, os);
-        os.close();
-        inputStream.close();
-        }
-        catch (IOException e) {
+		uploadDirectory.mkdirs();
+
+		try {
+			File oFile = new File("uploads/" + file.getOriginalFilename());
+			OutputStream os = new FileOutputStream(oFile);
+			InputStream inputStream = file.getInputStream();
+			IOUtils.copy(inputStream, os);
+			os.close();
+			inputStream.close();
+		} catch (IOException e) {
 			// TODO: handle exception
 		}
-		event.setUserId(addUser.getId()); //pobiera id usera który dodaje event, musi
+		event.setUserId(addUser.getId()); // pobiera id usera który dodaje event, musi
 		// być zalogowany
 
 		// --------------------------CAŁA ZMIANA DATY ZE STRINGA NA DATE I Z DATE NA
-		// CALENDAR -- BRAK OBECNIE INNEGO SPOPOBU----------------------------------------------------------------------------------------------------
+		// CALENDAR -- BRAK OBECNIE INNEGO
+		// SPOPOBU----------------------------------------------------------------------------------------------------
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
 		String dateInString = event.getDate();
 		Date date = formatter.parse(dateInString);
@@ -115,8 +120,6 @@ public class MainPageController implements HandlerExceptionResolver {
 		event.setImageSource(file.getOriginalFilename());
 		event.setEventTime(calendar);
 		eventService.addEvent(event);
-		
-		
 
 		return "redirect:mainPage";
 
@@ -125,85 +128,84 @@ public class MainPageController implements HandlerExceptionResolver {
 	@RequestMapping(value = "searchEvent", method = RequestMethod.POST)
 	public String searchEvent(Event event, Model model, HttpSession session, SearchParams searchParams) {
 
-
 		session.setAttribute("searchFilter", searchParams.getCity());
 		return "redirect:mainPage";
 	}
 
-	private List<Event> getListsOfEvent(String filter,Model model) {
-		
+	private List<Event> getListsOfEvent(String filter, Model model, HttpSession session) {
+		User u = (User) session.getAttribute("user");
+		List<Integer> followIdList = new ArrayList<Integer>();
+		List<Event> eventList;
+
 		int offset = 0;
 		if (filter == null || filter.equals("")) {
-			model.addAttribute("EventOffSet",offset);
-			
-			return eventService.getAll(offset, LIMIT);
+			model.addAttribute("EventOffSet", offset);
+			eventList = eventService.getAll(offset, LIMIT);
+			for (Event ev : eventList) {
+				followIdList.add(ev.getId());
+			}
+
+			session.setAttribute("followList", getFollow(u.getId(), followIdList));
+			return eventList;
 		} else {
-			return eventService.getCity(filter);
+			eventList = eventService.getCity(filter);
+			for (Event ev : eventList) {
+				followIdList.add(ev.getId());
+			}
+			session.setAttribute("followList", getFollow(u.getId(), followIdList));
+			return eventList;
 		}
 
 	}
-	
+
 	@RequestMapping(value = "userPage")
 	public String GoToUserPage() {
 		return "redirect:User";
 	}
-	
+
 	@RequestMapping("dynLoad")
-	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response, int offset) throws IOException{
-		   response.addHeader("Content-Type", "text/html; charset=utf-8");
-	        PrintWriter pw = response.getWriter();
-	        String result = "";
-	        List<Event> lista = eventService.getAll(offset, LIMIT);
-	        for (Event e : lista) {
-	        	result += "	<div class='eventDiv'>" + e.getMiasto() + "</div>";
-	        }
-	        pw.write(result);
+	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response, int offset)
+			throws IOException {
+		response.addHeader("Content-Type", "text/html; charset=utf-8");
+		PrintWriter pw = response.getWriter();
+		String result = "";
+		List<Event> lista = eventService.getAll(offset, LIMIT);
+		for (Event e : lista) {
+			result += "	<div class='eventDiv'>" + e.getMiasto() + "</div>";
+		}
+		pw.write(result);
 	}
 
 	@RequestMapping(value = "/user/followEvent/{followEventId}", method = RequestMethod.GET)
 	public String followEvent(@PathVariable(value = "followEventId", required = false) String followEventId,
 			HttpSession session) {
-		
+
 		User user = (User) session.getAttribute("user");
 
 		int EventId = Integer.valueOf(followEventId);
-		
+
 		followEventService.followEvent(user.getId(), EventId);
 
 		return "redirect:/user";
 	}
-	
+
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	private List<FollowEvent> getFollow(int userId, List<Integer> eventId) {
+
+		List<FollowEvent> followList=new ArrayList<FollowEvent>();
+		for (Integer ev : eventId) {
+			if (followEventService.countFollow(userId, ev) != 0) {
+				followList.add( followEventService.getFollow(userId, ev));
+				
+			}
+		}
+		return followList;
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
