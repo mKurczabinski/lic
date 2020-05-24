@@ -26,6 +26,8 @@ public class Event {
 	private String eventRange;
 
 	private String imageSource;
+	
+	private int follows;
 
 	@Transient
 	private String date; // Data do pobrania z formularza przy dodawaniu eventu, wykorzystana bo problem
@@ -102,6 +104,14 @@ public class Event {
 
 	public void setEventRange(String eventRange) {
 		this.eventRange = eventRange;
+	}
+
+	public int getFollows() {
+		return follows;
+	}
+
+	public void setFollows(int follows) {
+		this.follows = follows;
 	}
 
 }

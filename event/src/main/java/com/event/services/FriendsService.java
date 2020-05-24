@@ -1,6 +1,5 @@
 package com.event.services;
 
-import java.util.List;
 
 import com.event.models.Friends;
 

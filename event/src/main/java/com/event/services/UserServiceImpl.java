@@ -1,12 +1,9 @@
 package com.event.services;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.event.models.Friends;
 import com.event.models.User;
 import com.event.repository.UserRepository;
 

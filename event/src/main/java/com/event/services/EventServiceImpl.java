@@ -15,8 +15,8 @@ public class EventServiceImpl implements EventService{
 	private EventRepository eventRepository;
 	
 	@Override
-	public List<Event> getAll(int off, int limit) {
-		return eventRepository.listOfAll(off, limit);
+	public List<Event> getAll(int userId, int off, int limit) {
+		return eventRepository.listOfAll(userId, off, limit);
 	}
 	
 	@Override
@@ -35,4 +35,18 @@ public class EventServiceImpl implements EventService{
 		eventRepository.save(event);
 	}
 	
+	@Override
+	public void incrementFollower(int eventId) {
+		eventRepository.incrementFollower(eventId);
+	}
+	
+	@Override
+	public void decrementFollower(int eventId) {
+		eventRepository.decrementFollower(eventId);
+	}
+	
+	@Override
+	public List<Event> searchEventByParam(String param) {
+		return eventRepository.searchEventByParam(param);
+	}
 }

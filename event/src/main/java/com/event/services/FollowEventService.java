@@ -11,5 +11,7 @@ public interface FollowEventService {
 
 	FollowEvent getFollow(int userId, int eventId);
 
+	void deleteFollow(int userId, int eventId);
+
 	
 }

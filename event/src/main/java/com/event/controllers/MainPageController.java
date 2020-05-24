@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,6 +86,7 @@ public class MainPageController implements HandlerExceptionResolver {
 			model.addAttribute("eventList", getListsOfEvent(null, model, session));
 
 		model.addAttribute("followList", session.getAttribute("followList"));
+		List<FollowEvent> fel = (List<FollowEvent>) session.getAttribute("followList");
 
 		return "mainPage";
 
@@ -95,8 +101,14 @@ public class MainPageController implements HandlerExceptionResolver {
 		File uploadDirectory = new File("uploads");
 		uploadDirectory.mkdirs();
 
+		
+
+		
 		try {
-			File oFile = new File("uploads/" + file.getOriginalFilename());
+			String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+			
+			
+			File oFile = new File("uploads/" + "TUTAJ_ID" + extension);
 			OutputStream os = new FileOutputStream(oFile);
 			InputStream inputStream = file.getInputStream();
 			IOUtils.copy(inputStream, os);
@@ -105,12 +117,9 @@ public class MainPageController implements HandlerExceptionResolver {
 		} catch (IOException e) {
 			// TODO: handle exception
 		}
-		event.setUserId(addUser.getId()); // pobiera id usera który dodaje event, musi
-		// być zalogowany
+		event.setUserId(addUser.getId()); // pobiera id usera który dodaje event, musi być zalogowany
 
-		// --------------------------CAŁA ZMIANA DATY ZE STRINGA NA DATE I Z DATE NA
-		// CALENDAR -- BRAK OBECNIE INNEGO
-		// SPOPOBU----------------------------------------------------------------------------------------------------
+		// --------------------------CAŁA ZMIANA DATY ZE STRINGA NA DATE I Z DATE NA CALENDAR -- BRAK OBECNIE INNEGO SPOPOBU----------------------------------------------------------------------------------------------------
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
 		String dateInString = event.getDate();
 		Date date = formatter.parse(dateInString);
@@ -132,6 +141,7 @@ public class MainPageController implements HandlerExceptionResolver {
 		return "redirect:mainPage";
 	}
 
+	
 	private List<Event> getListsOfEvent(String filter, Model model, HttpSession session) {
 		User u = (User) session.getAttribute("user");
 		List<Integer> followIdList = new ArrayList<Integer>();
@@ -140,7 +150,7 @@ public class MainPageController implements HandlerExceptionResolver {
 		int offset = 0;
 		if (filter == null || filter.equals("")) {
 			model.addAttribute("EventOffSet", offset);
-			eventList = eventService.getAll(offset, LIMIT);
+			eventList = eventService.getAll(u.getId(),offset, LIMIT);
 			for (Event ev : eventList) {
 				followIdList.add(ev.getId());
 			}
@@ -153,6 +163,7 @@ public class MainPageController implements HandlerExceptionResolver {
 				followIdList.add(ev.getId());
 			}
 			session.setAttribute("followList", getFollow(u.getId(), followIdList));
+			
 			return eventList;
 		}
 
@@ -164,12 +175,13 @@ public class MainPageController implements HandlerExceptionResolver {
 	}
 
 	@RequestMapping("dynLoad")
-	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response, int offset)
+	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response, int offset,User u)
 			throws IOException {
+		
 		response.addHeader("Content-Type", "text/html; charset=utf-8");
 		PrintWriter pw = response.getWriter();
 		String result = "";
-		List<Event> lista = eventService.getAll(offset, LIMIT);
+		List<Event> lista = eventService.getAll(u.getId(),offset, LIMIT);
 		for (Event e : lista) {
 			result += "	<div class='eventDiv'>" + e.getMiasto() + "</div>";
 		}
@@ -182,12 +194,22 @@ public class MainPageController implements HandlerExceptionResolver {
 
 		User user = (User) session.getAttribute("user");
 
-		int EventId = Integer.valueOf(followEventId);
+		int eventId = Integer.valueOf(followEventId);
 
-		followEventService.followEvent(user.getId(), EventId);
+		FollowEvent fe = followEventService.getFollow(user.getId(), eventId);
 
-		return "redirect:/user";
+		if (fe == null) {
+			followEventService.followEvent(user.getId(), eventId);
+			eventService.incrementFollower(eventId);
+		} else {
+			followEventService.deleteFollow(user.getId(), eventId);
+			eventService.decrementFollower(eventId);
+		}
+		return "redirect:/mainPage";
 	}
+	
+
+	
 
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
@@ -198,11 +220,11 @@ public class MainPageController implements HandlerExceptionResolver {
 
 	private List<FollowEvent> getFollow(int userId, List<Integer> eventId) {
 
-		List<FollowEvent> followList=new ArrayList<FollowEvent>();
+		List<FollowEvent> followList = new ArrayList<FollowEvent>();
 		for (Integer ev : eventId) {
 			if (followEventService.countFollow(userId, ev) != 0) {
-				followList.add( followEventService.getFollow(userId, ev));
-				
+				followList.add(followEventService.getFollow(userId, ev));
+
 			}
 		}
 		return followList;

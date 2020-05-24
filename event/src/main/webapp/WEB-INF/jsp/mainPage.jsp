@@ -49,26 +49,32 @@
 				<c:choose>
 					<c:when test="${ev != null}">
 						<div class="eventDiv">
-							<div class="eventDivInfo">${ev.name }
-								${ev.miasto } ${ev.eventRange} <a
-									href="/user/followEvent/${ev.id }">
+							<div class="eventDivInfo">
+								| ${ev.name } | ${ev.miasto } | ${ev.eventRange} |liczba
+								obserwujących ${ ev.follows} | | data ${ev.eventTime.time } | <a
+									href="/user/followEvent/${ev.id }" id="followButt${ev.id }">
 
-								<c:forEach var="evl" items="${followList }">
-									<c:choose>
-										<c:when test="${evl.eventId eq ev.id }">
-											nie
-										</c:when>
+									obserwuj <c:forEach var="evl" items="${followList }">
+										<c:choose>
+											<c:when test="${evl.eventId eq ev.id }">
+												<script>
+											
+												document.getElementById('followButt'+${ev.id}).innerHTML="przestań obserwować";
+												console.log("ssss");
+												
+											</script>
+											</c:when>
 
-									</c:choose>
+										</c:choose>
 
 
-								</c:forEach>
+									</c:forEach>
 
-							obserwuj wydarzenie</a>
+								</a>
 							</div>
 
 
-							<img id="imageDiv" alt="" src="uploads/${ev.imageSource }">
+							<img style="cursor:pointer" id="imageDiv" alt="" src="uploads/${ev.imageSource }" onClick="window.location.href='event/${ev.id}'">
 
 						</div>
 					</c:when>
@@ -187,7 +193,8 @@
 				URL.revokeObjectURL(output.src)
 			}
 		};
-	</script>
+
+
 	</script>
 
 </body>

@@ -1,7 +1,5 @@
 package com.event.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +26,10 @@ public class FollowEventImpl implements FollowEventService{
 	public int countFollow(int userId, int eventId) {
 		return followEventRepo.countFollow(userId, eventId);
 	}
-
+	
+	@Override
+	public void deleteFollow(int userId, int eventId) {
+		followEventRepo.deleteFolow(userId, eventId);
+	}
 	
 }

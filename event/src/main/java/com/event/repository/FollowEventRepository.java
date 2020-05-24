@@ -22,4 +22,9 @@ public interface FollowEventRepository extends JpaRepository<FollowEvent, Intege
 	
 	@Query(value="select count(*) from follow_event where user_id =:userId and event_id =:eventId",nativeQuery = true)
 	public int countFollow(@Param("userId") int userId, @Param("eventId") int eventId);
+	
+	@Modifying
+	@Transactional
+	@Query(value = "delete from follow_event where user_id =:userId and event_id =:eventId", nativeQuery = true)
+	public void deleteFolow(@Param("userId") int userId, @Param("eventId") int eventId);
 }

@@ -1,5 +1,5 @@
 body {
-	background-color: #FFFFFF;
+	background-color:    #f8f9f9;
 }
 
 .nav {
@@ -15,6 +15,10 @@ body {
 	padding: 10px;
 }
 
+#searchButton{
+	padding-left: 0px;
+}
+
 .linkButton {
 	text-decoration: none;
 	color: white;
@@ -24,6 +28,7 @@ body {
 	width: 50%;
 	min-height: 100vh;
 	float: left;
+	background-color:  #f8f9f9;
 }
 
 .leftSite {
@@ -57,10 +62,12 @@ body {
 } */
 
 .eventDiv {
-	margin-bottom: 10px;
+	margin-bottom: 100px;
 	background-color: #F9F9F9;
 	height: 200px;
 	position: relative;
+	
+	
 }
 
 .eventDivInfo {
