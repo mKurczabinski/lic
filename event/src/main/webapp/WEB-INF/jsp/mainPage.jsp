@@ -3,6 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <!DOCTYPE html>
 <html>
@@ -16,16 +17,10 @@
 
 
 <body>
-
-	<header> </header>
-
-
 	<%@include file="/WEB-INF/jsp/navbar.jsp"%>
 
 	<div class="container">
 		<div class="leftSite">
-			left site
-
 
 			<form:form action="/searchEvent" modelAttribute="eventToSearch"
 				method="post">
@@ -37,7 +32,6 @@
 				<p>
 					<input type="submit" value="filtruj" />
 			</form:form>
-			<input type="submit" value="Społeczność" name="userPage" />
 
 		</div>
 
@@ -60,7 +54,6 @@
 												<script>
 											
 												document.getElementById('followButt'+${ev.id}).innerHTML="przestań obserwować";
-												console.log("ssss");
 												
 											</script>
 											</c:when>
@@ -74,7 +67,9 @@
 							</div>
 
 
-							<img style="cursor:pointer" id="imageDiv" alt="" src="uploads/${ev.imageSource }" onClick="window.location.href='event/${ev.id}'">
+							<img style="cursor: pointer" id="imageDiv" alt=""
+								src="uploads/${ev.imageSource }"
+								onClick="window.location.href='event/eventPage/${ev.id}'">
 
 						</div>
 					</c:when>
@@ -84,8 +79,6 @@
 			<div id="dynData"></div>
 		</div>
 		<div class="rightPage">
-			right site
-
 			<!-- DODAWANIE NOWEGO WYDARZENIA -->
 
 			<!-- Trigger/Open The Modal -->
@@ -99,6 +92,8 @@
 					<span class="close">&times;</span>
 
 					<div class="addEvent">
+
+
 						<form:form action="/addEvent" modelAttribute="eventToAdd"
 							method="post" enctype="multipart/form-data">\
 							

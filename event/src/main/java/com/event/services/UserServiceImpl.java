@@ -41,4 +41,9 @@ public class UserServiceImpl implements UserService{
 		return userRepository.listOfFriends(userId);
 	}
 	
+	@Override
+	public List<User> listFollowEventUser(int eventId){
+		return userRepository.listFollowEventUser(eventId);
+	}
+	
 }

@@ -15,5 +15,7 @@ public interface UserService {
 	public List<User> getfriendsInvites(int id);
 
 	List<User> listOfFriends(int userId);
+
+	List<User> listFollowEventUser(int eventId);
 }
 

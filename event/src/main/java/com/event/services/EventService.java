@@ -1,6 +1,7 @@
 package com.event.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.event.models.Event;
 
@@ -21,5 +22,9 @@ public interface EventService {
 	void decrementFollower(int eventId);
 	
 	public List<Event> searchEventByParam(String param);
+
+	public Event findEventById(int id);
+
+	void addImageSource(String imageSource, int eventId);
 
 }

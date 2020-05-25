@@ -1,6 +1,7 @@
 package com.event.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,15 @@ public class EventServiceImpl implements EventService{
 	@Override
 	public List<Event> searchEventByParam(String param) {
 		return eventRepository.searchEventByParam(param);
+	}
+	
+	@Override
+	public Event findEventById(int id) {
+		return eventRepository.findEventById(id);
+	}
+	
+	@Override
+	public void addImageSource(String imageSource, int eventId) {
+		eventRepository.addImageSource(imageSource, eventId);
 	}
 }

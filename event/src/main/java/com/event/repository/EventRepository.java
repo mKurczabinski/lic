@@ -36,6 +36,14 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 	
 	@Query(value = "select * from event e where miasto =:param or name =:param order by create_time desc limit 5", nativeQuery = true)
 	public List<Event> searchEventByParam(@Param("param") String param);
+
+	@Query(value = "Select * from Event where id =:eventId", nativeQuery = true)
+	public Event findEventById(@Param("eventId") int eventId);
+	
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE Event set image_source =:imageSource WHERE id = :eventId", nativeQuery = true)
+	public void addImageSource(String imageSource, int eventId);
 	
 }
 

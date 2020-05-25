@@ -104,19 +104,7 @@ public class MainPageController implements HandlerExceptionResolver {
 		
 
 		
-		try {
-			String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-			
-			
-			File oFile = new File("uploads/" + "TUTAJ_ID" + extension);
-			OutputStream os = new FileOutputStream(oFile);
-			InputStream inputStream = file.getInputStream();
-			IOUtils.copy(inputStream, os);
-			os.close();
-			inputStream.close();
-		} catch (IOException e) {
-			// TODO: handle exception
-		}
+
 		event.setUserId(addUser.getId()); // pobiera id usera który dodaje event, musi być zalogowany
 
 		// --------------------------CAŁA ZMIANA DATY ZE STRINGA NA DATE I Z DATE NA CALENDAR -- BRAK OBECNIE INNEGO SPOPOBU----------------------------------------------------------------------------------------------------
@@ -126,10 +114,30 @@ public class MainPageController implements HandlerExceptionResolver {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		// -------------------------------------------------------------------------------------------------------------------------------------
-		event.setImageSource(file.getOriginalFilename());
+		
 		event.setEventTime(calendar);
 		eventService.addEvent(event);
 
+		try {
+			String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+			
+			
+			File oFile = new File("uploads/" + event.getId() + extension);
+			OutputStream os = new FileOutputStream(oFile);
+			InputStream inputStream = file.getInputStream();
+			IOUtils.copy(inputStream, os);
+			os.close();
+			inputStream.close();
+			
+			String imageSource = event.getId() + extension;
+			eventService.addImageSource(imageSource, event.getId());
+			
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+		
+		
+		
 		return "redirect:mainPage";
 
 	}

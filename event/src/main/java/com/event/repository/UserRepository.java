@@ -21,6 +21,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query(value = "select * from  `user` u left join friends f on u.id = f.friend_id where f.user_id =:userId and f.accept_invite = 1 ", nativeQuery = true)
 	public List<User> listOfFriends(@Param("userId") int userId);
 	
+	@Query(value="select * from `user` u join follow_event fe on u.id=fe.user_id where fe.event_id =:eventId", nativeQuery = true)
+	public List<User> listFollowEventUser(@Param("eventId") int eventId);
 	
 
 }
