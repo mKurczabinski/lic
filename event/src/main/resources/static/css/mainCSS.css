@@ -146,6 +146,7 @@ keyframes animationOpen {
 	opacity: 0
 }
 
+
 to {
 	top: 0;
 	opacity: 1

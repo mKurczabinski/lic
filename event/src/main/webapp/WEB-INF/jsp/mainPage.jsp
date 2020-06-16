@@ -11,8 +11,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="pl" />
 <link rel="stylesheet" href="/resources/css/mainCSS.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <title>Meet-mainPage</title>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 
 
@@ -98,19 +102,68 @@
 							method="post" enctype="multipart/form-data">\
 							
 							<img id="imageToAdd" />
+
 							<div class=AddInfo>
 								<h1>Dodanie nowego wydarzenia</h1>
-								<br> <label for="name">nazwa wydarzenia</label>
+
+
+								<div class="form-group">
+									<form:input path="name" type="text" class="form-control"
+										id="name" placeholder="nazwa wydarzenia" name="name"></form:input>
+								</div>
+								<div class="form-group">
+									<form:input path="miasto" type="text" class="form-control"
+										id="miasto" placeholder="miasto" name="name"></form:input>
+								</div>
+
+
+								<div style="float:left">
+									<label>zasięg wydarzenia</label>
+									<div class="radio">
+										<label><form:radiobutton path="eventRange"
+												value="private" id="privateRange" />prywatny</label>
+									</div>
+									<div class="radio">
+										<label><form:radiobutton path="eventRange"
+												value="public" id="publicRange" />publiczny</label>
+									</div>
+					
+
+								<div class="input-group date" data-provide="timepicker">
+									<label>data wydarzenia </label>
+									<div class="input-group date" data-provide="datepicker">
+										<form:input type="date" id="start" path="date"></form:input>
+									</div>
+								</div>
+
+								<div class="input-group date" data-provide="timepicker">
+									<label>godzina wydarzenia </label>
+									<form:input type="time" id="start" path="date"></form:input>
+								</div>
+
+								<div class="form-group">
+									<input type="file" name="file" accept="image/*"
+										onchange="loadFile(event)"></input> 
+										
+									<input type="submit" value="dodaj Event" />
+								</div>
+								</div>	
+								<%-- 								<br> <label for="name">nazwa wydarzenia</label>
 								<form:input path="name" id="name"></form:input>
+								
 								<br> <label for="miasto">miasto</label>
 								<form:input path="miasto" id="miasto"></form:input>
+								
+								
 								<br> <label>zasięg wydarzenia</label> <br>
 								<form:radiobutton path="eventRange" value="private"
 									id="privateRange" />
 								prywatny<br>
 								<form:radiobutton path="eventRange" value="public"
 									id="publicRange" />
-								publiczny<br> <br />data wydarzenia
+								publiczny<br> 
+								
+								<br />data wydarzenia
 								<form:input type="date" id="start" path="date"></form:input>
 								<br />godzina wydarzenia
 								<form:input type="time" id="start" path="date"></form:input>
@@ -119,7 +172,8 @@
 									accept="image/*" onchange="loadFile(event)"></input>
 								<p>
 
-									<input type="submit" value="dodaj Event" />
+									<input type="submit" value="dodaj Event" /> --%>
+
 							</div>
 						</form:form>
 					</div>
@@ -134,6 +188,9 @@
 
 
 	<script>
+
+
+	
 		var offSet = 0;
 		$(window).scroll(
 				function() {

@@ -17,7 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 	@Query("Select miasto from Event")
 	  public List<String> listOfCity();
 
-	@Query(value = "select * from event e left join follow_event fe on e.id = fe.event_id where e.user_id =:userId or fe.user_id =:userId order by e.id desc limit :limit offset :off", nativeQuery = true)
+	@Query(value = "select distinct e.* from event e join follow_event fe on e.id = fe.event_id where e.user_id =:userId or fe.user_id =:userId order by e.id desc limit :limit offset :off", nativeQuery = true)
 	public List<Event> listOfAll(@Param("userId") int userId, @Param("off") int off, @Param("limit")int limit);
 	
 	

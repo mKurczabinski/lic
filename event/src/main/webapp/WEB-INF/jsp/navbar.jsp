@@ -23,8 +23,8 @@
 		<li class="navBox" id="searchButton" ><button id="submit"
 				onclick="search();" >szukaj</button></li>
 
-		<li class="navBox"><button id="submit"
-				onclick="location.href ='/logout'">wyloguj</button></li>
+		<li class="navBox" style="float: right"><button id="submit"
+				onclick="location.href ='/logout'" >wyloguj </button></li>
 
 
 		<%-- 	<form:form action="findNavParam" modelAttribute="navResult"

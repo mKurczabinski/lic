@@ -76,12 +76,12 @@ public class UserPageController {
 		User user = (User) session.getAttribute("user");
 
 		searchUser = userService.getUser(userSearchParams.getEmail());
-
 		session.setAttribute("searchUser", searchUser);
 
 		if (searchUser != null) {
 			findFriend = friendsService.getFriend(user.getId(), searchUser.getId()); // pobranie z Friends jeśli user ma
-																						// go w znajomych
+																						// go w znajomych lub są wysłane
+																						// zaproszenia
 			session.setAttribute("friendInfo", findFriend);
 		}
 		return "redirect:/user";
@@ -99,8 +99,17 @@ public class UserPageController {
 		friendToInvite.setUserId(user.getId());
 		friendToInvite.setSendInvite(true);
 		friendToInvite.setAcceptInvite(false);
-
 		friendsService.saveFriend(friendToInvite);
+
+		Friends inviteFriend = friendsService.getFriend(userToInvite.getId(), user.getId());
+		Friends u = friendsService.getFriend(user.getId(), userToInvite.getId());
+
+		if (u != null && inviteFriend != null) {
+			if (inviteFriend.isSendInvite() && u.isSendInvite()) {
+				friendsService.updateFriendSendInvite(u.getUserId(), inviteFriend.getUserId());
+				friendsService.updateFriendSendInvite(inviteFriend.getUserId(), u.getUserId());
+			}
+		}
 		return "redirect:/user";
 	}
 
@@ -174,7 +183,7 @@ public class UserPageController {
 		user = (User) session.getAttribute("user");
 
 		Friends friendToDelete = (Friends) session.getAttribute("friendInfo");
-		
+
 		friendsService.deleteFriend(user.getId(), friendToDelete.getFriendId());
 		friendsService.deleteFriend(friendToDelete.getFriendId(), user.getId());
 

@@ -35,7 +35,7 @@
 				<h3>uczestnicy wydarzenia</h3>
 				<ul class="list-group list-group-flush">
 				<c:forEach var="us" items="${ userList}">
-					<li class="list-group-item" style="max-width:200px">${user.email }</li>
+					<li class="list-group-item" style="max-width:200px">${us.email }</li>
 				</c:forEach>
 				</ul>
 

@@ -101,26 +101,19 @@ public class MainPageController implements HandlerExceptionResolver {
 		File uploadDirectory = new File("uploads");
 		uploadDirectory.mkdirs();
 
-		
+		event.setUserId(addUser.getId());
 
-		
-
-		event.setUserId(addUser.getId()); // pobiera id usera który dodaje event, musi być zalogowany
-
-		// --------------------------CAŁA ZMIANA DATY ZE STRINGA NA DATE I Z DATE NA CALENDAR -- BRAK OBECNIE INNEGO SPOPOBU----------------------------------------------------------------------------------------------------
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
 		String dateInString = event.getDate();
 		Date date = formatter.parse(dateInString);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		// -------------------------------------------------------------------------------------------------------------------------------------
 		
 		event.setEventTime(calendar);
 		eventService.addEvent(event);
 
 		try {
 			String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-			
 			
 			File oFile = new File("uploads/" + event.getId() + extension);
 			OutputStream os = new FileOutputStream(oFile);
@@ -135,9 +128,6 @@ public class MainPageController implements HandlerExceptionResolver {
 		} catch (IOException e) {
 			// TODO: handle exception
 		}
-		
-		
-		
 		return "redirect:mainPage";
 
 	}
