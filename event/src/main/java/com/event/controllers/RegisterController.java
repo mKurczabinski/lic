@@ -24,17 +24,19 @@ public class RegisterController {
 	}
 
 	@RequestMapping("addUser")
-	public String addUser(User user) {
+	public String addUser(User user, Model model) {
 
 		User checkUser = userService.findUserByEmail(user.getEmail());
 
-		if (checkUser == null) {
+		if (checkUser == null && user.getEmail()!=null && user.getPassword()!=null) {
 
 			userService.saveUser(user);
-
+			model.addAttribute("userIsInBase", false);
 			return "login";
-		} else
+		} else {
+			model.addAttribute("userIsInBase", true);
 			return "register";
+		}
 	}
 
 }

@@ -15,13 +15,16 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query(value = "Select * from User where email like concat(:email)", nativeQuery = true)
 	public User getUser(@Param("email") String emial);
 
-	@Query(value = "select * from  `user` u where exists (select 1 from friends f where user_id = u.id and send_invite = true and friend_id=:userId) ", nativeQuery = true)
+	@Query(value = "select * from  `user` u where exists (select 1 from friends f "
+			+ "where user_id = u.id and send_invite = true and friend_id=:userId) ", nativeQuery = true)
 	public List<User> getfriendsInvites(@Param("userId") int id);
 	
-	@Query(value = "select * from  `user` u left join friends f on u.id = f.friend_id where f.user_id =:userId and f.accept_invite = 1 ", nativeQuery = true)
+	@Query(value = "select * from  `user` u left join friends f on u.id = f.friend_id "
+			+ "where f.user_id =:userId and f.accept_invite = 1 ", nativeQuery = true)
 	public List<User> listOfFriends(@Param("userId") int userId);
 	
-	@Query(value="select * from `user` u join follow_event fe on u.id=fe.user_id where fe.event_id =:eventId", nativeQuery = true)
+	@Query(value="select * from `user` u join follow_event fe on u.id=fe.user_id "
+			+ "where fe.event_id =:eventId", nativeQuery = true)
 	public List<User> listFollowEventUser(@Param("eventId") int eventId);
 	
 

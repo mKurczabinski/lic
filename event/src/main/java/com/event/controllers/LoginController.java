@@ -56,9 +56,9 @@ public class LoginController {
 				
 				return "redirect:/mainPage";
 			}else {
-
+				model.addAttribute("badPass", true);
 				return "login";
-		} 
+			} 
 		}else
 		return "login";
 	}

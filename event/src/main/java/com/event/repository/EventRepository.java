@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.event.models.Event;
 
 @Repository
@@ -17,7 +16,14 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 	@Query("Select miasto from Event")
 	  public List<String> listOfCity();
 
-	@Query(value = "select distinct e.* from event e join follow_event fe on e.id = fe.event_id where e.user_id =:userId or fe.user_id =:userId order by e.id desc limit :limit offset :off", nativeQuery = true)
+	@Query(value = "select e.* from city c\r\n" + 
+			"join follow_city fc on c.id = fc.city_id\r\n" + 
+			"join event e on c.city_name = e.miasto \r\n" + 
+			"left join follow_event fe on e.id = fe.event_id\r\n" + 
+			"where fc.user_id =:userId and e.event_range = 'public'\r\n" + 
+			"or e.user_id =:userId \r\n" + 
+			"or fe.user_id =:userId \r\n" + 
+			"order by e.id desc limit :limit offset :off", nativeQuery = true)
 	public List<Event> listOfAll(@Param("userId") int userId, @Param("off") int off, @Param("limit")int limit);
 	
 	

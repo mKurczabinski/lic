@@ -11,12 +11,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="pl" />
 <link rel="stylesheet" href="/resources/css/mainCSS.css">
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <title>Meet-mainPage</title>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 </head>
 
 
@@ -203,26 +202,15 @@
 					//  $("#dynData").text("");}
 				});
 
-		// Get the modal
 		var addEventBox = document.getElementById("addEventBox");
-
-		// Get the button that opens the modal
 		var btn = document.getElementById("addbtn");
-
-		// Get the <span> element that closes the modal
 		var closeBoxBtn = document.getElementsByClassName("close")[0];
-
-		// When the user clicks the button, open the modal 
 		btn.onclick = function() {
 			addEventBox.style.display = "block";
 		}
-
-		// When the user clicks on <span> (x), close the modal
 		closeBoxBtn.onclick = function() {
 			addEventBox.style.display = "none";
 		}
-
-		// When the user clicks anywhere outside of the modal, close it
 		window.onclick = function(event) {
 			if (event.target == addEventBox) {
 				addEventBox.style.display = "none";

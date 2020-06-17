@@ -11,19 +11,33 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="pl" />
 <link rel="stylesheet" href="/resources/css/mainCSS.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js">
+	
+</script>
 <title>Meet-mainPage</title>
 </head>
 <body>
 	<%@include file="/WEB-INF/jsp/navbar.jsp"%>
-	
-	
-	
-	<c:forEach var="event" items="${ eventList}">
-		
-		nazwa: ${ event.name}
-		
-	</c:forEach>
-	
-	
+
+	<div class="container mt-3">
+		<h2>Lista miast oraz odbywających się w nich publicznych imprez</h2>
+
+		<ul class="list-group">
+			<c:forEach var="city" items="${ cityList}">
+				<li
+					class="list-group-item d-flex justify-content-between align-items-center" style="max-width:200px">
+				${ city.cityName} <a href="/search/followCity/${city.id }" id="followButt${city.id }"> obserwuj </a><span class="badge badge-primary badge-pill">12</span>
+				</li>
+			</c:forEach>
+
+		</ul>
+	</div>
+
 </body>
 </html>
