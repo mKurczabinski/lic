@@ -56,7 +56,6 @@
 		userIsInBase = "${userIsInBase}";
 
 		function validatePassword() {
-			
 			if (password.value != password2.value || password.value == '') {
 				password2.setCustomValidity("podane hasła nie są identyczne lub pola są puste");
 			}
@@ -65,8 +64,8 @@
 			}
 		}
 		button.onclick = validatePassword;
-/*   		password.onchange = validatePassword;
-		password2.onkeyup = validatePassword;   */
+   		password.onchange = validatePassword;
+		password2.onkeyup = validatePassword;
 
 		window.onload = function(){
 		if(userIsInBase == "true"){

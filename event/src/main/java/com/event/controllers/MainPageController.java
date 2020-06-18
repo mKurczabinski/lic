@@ -173,15 +173,46 @@ public class MainPageController implements HandlerExceptionResolver {
 	}
 
 	@RequestMapping("dynLoad")
-	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response, int offset,User u)
+	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response,HttpSession session, int offset,User u)
 			throws IOException {
 		
+		u = (User) session.getAttribute("user");
 		response.addHeader("Content-Type", "text/html; charset=utf-8");
 		PrintWriter pw = response.getWriter();
 		String result = "";
 		List<Event> lista = eventService.getAll(u.getId(),offset, LIMIT);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd / HH:mm");
+		
 		for (Event e : lista) {
-			result += "	<div class='eventDiv'>" + e.getMiasto() + "</div>";
+			
+			
+			result += "	<div class=\"eventDiv\">\r\n" + 
+					"							<div class=\"eventDivInfo\">\r\n" + 
+					"								<ul class=\"list-group\">\r\n" + 
+					"									<li class=\"list-group-item\">" +e.getName() +" || " + e.getMiasto()+ " ||\r\n" + 
+					"										"+e.getEventRange() +" || "+sdf.format(e.getEventTime().getTime())+" \r\n" + 
+					"										|| "+e.getFollows() + "<span class=\"glyphicon glyphicon-user\"\r\n" + 
+					"										style=\"color: grey\"> </span> <a\r\n" + 
+					"										href=\"/user/followEvent/"+e.getId()+"\" id=\"followButt "+e.getId() +"\"\r\n" + 
+					"										class=\"btn btn-default\" style=\"float: right\"> obserwuj <c:forEach\r\n" + 
+					"												var=\"evl\" items=\"${followList }\">\r\n" + 
+					"												<c:choose>\r\n" + 
+					"													<c:when test=\"${evl.eventId eq ev.id }\">\r\n" + 
+					"														<script>\r\n" + 
+					"														document.getElementById('followButt'+${ev.id}).innerHTML=\"przestań obserwować\";\r\n" + 
+					"														</script>\r\n" + 
+					"													</c:when>\r\n" + 
+					"												</c:choose>\r\n" + 
+					"											</c:forEach>\r\n" + 
+					"									</a>\r\n" + 
+					"									</li>\r\n" + 
+					"								</ul>\r\n" + 
+					"							</div>\r\n" + 
+					"							<img style=\"cursor: pointer\" id=\"imageDiv\" alt=\"\"\r\n" + 
+					"								src=\"uploads/"+  e.getImageSource() +"\"\r\n" + 
+					"								onClick=\"window.location.href='event/eventPage/"+e.getId()+"'\">\r\n" + 
+					"						</div>";
 		}
 		pw.write(result);
 	}
@@ -207,7 +238,29 @@ public class MainPageController implements HandlerExceptionResolver {
 	}
 	
 
-	
+	@RequestMapping(value = "/filterEvent/")
+	public String filterEvent(@RequestParam(name = "city", required = false) String city,
+								@RequestParam(name = "startDate", required = false) String startDate,
+									@RequestParam(name = "endDate", required = false) String endDate,
+										User user, HttpSession session) throws ParseException {
+		
+		Calendar startCal = Calendar.getInstance();
+		Calendar endCal = Calendar.getInstance();
+		if(startDate!="") {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date sDate = sdf.parse(startDate);
+		startCal.setTime(sDate);
+		}
+		if(endDate!="") {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date eDate = sdf.parse(endDate);
+		endCal.setTime(eDate);
+		}
+		
+		
+		
+		return "redirect:/mainPage";
+	}
 
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,

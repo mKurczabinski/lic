@@ -16,7 +16,7 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 	@Query("Select miasto from Event")
 	  public List<String> listOfCity();
 
-	@Query(value = "select e.* from city c\r\n" + 
+	@Query(value = "select distinct e.* from city c\r\n" + 
 			"join follow_city fc on c.id = fc.city_id\r\n" + 
 			"join event e on c.city_name = e.miasto \r\n" + 
 			"left join follow_event fe on e.id = fe.event_id\r\n" + 

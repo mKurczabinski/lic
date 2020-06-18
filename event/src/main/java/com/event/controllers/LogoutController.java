@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LogoutController {
 
 	@RequestMapping("/")
-	public String logout(HttpSession session,HttpServletResponse response) throws IOException {
+	public String logout(HttpSession session) throws IOException {
 		
 		session.invalidate();
 		

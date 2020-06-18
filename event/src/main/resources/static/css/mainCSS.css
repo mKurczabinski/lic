@@ -55,13 +55,6 @@ body {
 	height: 40vh;
 }
 
-/* .addEvent2 {
-	text-align: left;
-	height: 200px;
-	background-color: green;
-	width: auto;
-	
-} */
 
 .eventDiv {
 	margin-bottom: 100px;
@@ -98,7 +91,7 @@ body {
 	width: 50%;
 	height:100%;
 	float: left;
-	text-align: center;
+	text-align: left;
 }
 /* --------------------------------------OKNO DODAWANIA EVENTU-------------------------------------- */
 

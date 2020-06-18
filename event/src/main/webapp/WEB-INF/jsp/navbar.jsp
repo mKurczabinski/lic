@@ -19,19 +19,13 @@
 				onclick="location.href ='/user/'">Społeczność</button></li>
 
 		<li class="navBox"><input id="paramInput" type="text"
-			placeholder="czego szukasz?" style="padding-right: 0px"></li>
+			placeholder="wpisz szukane miasto..." style="padding-right: 0px"></li>
 		<li class="navBox" id="searchButton" ><button id="submit"
 				onclick="search();" >szukaj</button></li>
 
 		<li class="navBox" style="float: right"><button id="submit"
 				onclick="location.href ='/logout'" >wyloguj </button></li>
 
-
-		<%-- 	<form:form action="findNavParam" modelAttribute="navResult"
-		method="post">
-		<form:input path="city" id="miasto"></form:input>
-		<input type="submit" value="filtruj" />
-	</form:form> --%>
 	</ul>
 </body>
 <script>
@@ -39,7 +33,6 @@
 		var searchParam = document.getElementById("paramInput").value;
 
 		window.location = '/search/navSearch/' + searchParam;
-		console.log("'/navSearch/'+searchParam;");
 	}
 </script>
 </html>

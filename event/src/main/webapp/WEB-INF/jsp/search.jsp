@@ -26,13 +26,19 @@
 	<%@include file="/WEB-INF/jsp/navbar.jsp"%>
 
 	<div class="container mt-3">
-		<h2>Lista miast oraz odbywających się w nich publicznych imprez</h2>
+		<h2>Lista miast oraz liczba imprez</h2>
 
 		<ul class="list-group">
 			<c:forEach var="city" items="${ cityList}">
 				<li
 					class="list-group-item d-flex justify-content-between align-items-center" style="max-width:200px">
-				${ city.cityName} <a href="/search/followCity/${city.id }" id="followButt${city.id }"> obserwuj </a><span class="badge badge-primary badge-pill">12</span>
+					<c:if test="${ city.id==1}">
+					${ city.cityName} <a href="/search/followCity/${city.id }" id="followButt${city.id }"> obserwuj </a><span class="badge badge-primary badge-pill">12</span>
+					</c:if>
+					<c:if test="${ city.id!=1}">
+					${ city.cityName} <a href="/search/followCity/${city.id }" id="followButt${city.id }"> obserwuj </a><span class="badge badge-primary badge-pill">2</span>
+					</c:if>
+				
 				</li>
 			</c:forEach>
 

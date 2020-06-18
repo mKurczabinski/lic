@@ -4,6 +4,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page import="java.io.*,java.util.*"%>
+<%@ page import="javax.servlet.*,java.text.*"%>
 
 <!DOCTYPE html>
 <html>
@@ -11,10 +14,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="pl" />
 <link rel="stylesheet" href="/resources/css/mainCSS.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	
 <title>Meet-mainPage</title>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
 
 </head>
 
@@ -25,7 +32,7 @@
 	<div class="container">
 		<div class="leftSite">
 
-			<form:form action="/searchEvent" modelAttribute="eventToSearch"
+			<%-- <form:form action="/searchEvent" modelAttribute="eventToSearch"
 				method="post">
 				<h1>filtrowanie wydarzeń</h1>
 				<br>
@@ -34,7 +41,22 @@
 				<br>
 				<p>
 					<input type="submit" value="filtruj" />
-			</form:form>
+			</form:form> --%>
+			<h3>filtrowanie wydarzeń</h3>
+			<div class="input-group date" data-provide="timepicker">
+				<label>data od</label>
+				<div class="input-group date" data-provide="datepicker">
+					<input type="date" id="startDate">
+				</div>
+				<label>data do</label>
+				<div class="input-group date" data-provide="datepicker">
+					<input type="date" id="endDate">
+				</div>
+				<br>
+				<label>miasto</label><p>
+				<input id="fcity" placeholder="miasto" >
+			</div>
+			<button id="FilButton" onClick="filterEvent()">szukaj</button>
 
 		</div>
 
@@ -47,33 +69,30 @@
 					<c:when test="${ev != null}">
 						<div class="eventDiv">
 							<div class="eventDivInfo">
-								| ${ev.name } | ${ev.miasto } | ${ev.eventRange} |liczba
-								obserwujących ${ ev.follows} | | data ${ev.eventTime.time } | <a
-									href="/user/followEvent/${ev.id }" id="followButt${ev.id }">
-
-									obserwuj <c:forEach var="evl" items="${followList }">
-										<c:choose>
-											<c:when test="${evl.eventId eq ev.id }">
-												<script>
-											
-												document.getElementById('followButt'+${ev.id}).innerHTML="przestań obserwować";
-												
-											</script>
-											</c:when>
-
-										</c:choose>
-
-
-									</c:forEach>
-
-								</a>
+								<ul class="list-group">
+									<li class="list-group-item">${ ev.name}|| ${ev.miasto } ||
+										${ev.eventRange} || <fmt:formatDate
+											pattern="yyyy-MM-dd / HH:MM" value="${ev.eventTime.time}"></fmt:formatDate>
+										|| ${ev.follows }<span class="glyphicon glyphicon-user"
+										style="color: grey"> </span> <a
+										href="/user/followEvent/${ev.id }" id="followButt${ev.id }"
+										class="btn btn-default" style="float: right"> obserwuj <c:forEach
+												var="evl" items="${followList }">
+												<c:choose>
+													<c:when test="${evl.eventId eq ev.id }">
+														<script>
+														document.getElementById('followButt'+${ev.id}).innerHTML="przestań obserwować";
+														</script>
+													</c:when>
+												</c:choose>
+											</c:forEach>
+									</a>
+									</li>
+								</ul>
 							</div>
-
-
 							<img style="cursor: pointer" id="imageDiv" alt=""
 								src="uploads/${ev.imageSource }"
 								onClick="window.location.href='event/eventPage/${ev.id}'">
-
 						</div>
 					</c:when>
 				</c:choose>
@@ -98,8 +117,8 @@
 
 
 						<form:form action="/addEvent" modelAttribute="eventToAdd"
-							method="post" enctype="multipart/form-data">\
-							
+							method="post" enctype="multipart/form-data">
+
 							<img id="imageToAdd" />
 
 							<div class=AddInfo>
@@ -116,20 +135,19 @@
 								</div>
 
 
-								<div style="float:left">
-									<label>zasięg wydarzenia</label>
-									<div class="radio">
-										<label><form:radiobutton path="eventRange"
-												value="private" id="privateRange" />prywatny</label>
-									</div>
-									<div class="radio">
-										<label><form:radiobutton path="eventRange"
-												value="public" id="publicRange" />publiczny</label>
-									</div>
-					
+								<label>zasięg wydarzenia</label>
+								<div class="radio">
+									<label><form:radiobutton path="eventRange"
+											value="private" id="privateRange" />prywatny</label>
+								</div>
+								<div class="radio">
+									<label><form:radiobutton path="eventRange"
+											value="public" id="publicRange" />publiczny</label>
+								</div>
 
-								<div class="input-group date" data-provide="timepicker">
-									<label>data wydarzenia </label>
+
+								<div class="input-group date" data-provide="timepicker" >
+									<label >data wydarzenia </label>
 									<div class="input-group date" data-provide="datepicker">
 										<form:input type="date" id="start" path="date"></form:input>
 									</div>
@@ -144,36 +162,12 @@
 									<input type="file" name="file" accept="image/*"
 										onchange="loadFile(event)"></input> 
 										
-									<input type="submit" value="dodaj Event" />
+										
 								</div>
-								</div>	
-								<%-- 								<br> <label for="name">nazwa wydarzenia</label>
-								<form:input path="name" id="name"></form:input>
-								
-								<br> <label for="miasto">miasto</label>
-								<form:input path="miasto" id="miasto"></form:input>
-								
-								
-								<br> <label>zasięg wydarzenia</label> <br>
-								<form:radiobutton path="eventRange" value="private"
-									id="privateRange" />
-								prywatny<br>
-								<form:radiobutton path="eventRange" value="public"
-									id="publicRange" />
-								publiczny<br> 
-								
-								<br />data wydarzenia
-								<form:input type="date" id="start" path="date"></form:input>
-								<br />godzina wydarzenia
-								<form:input type="time" id="start" path="date"></form:input>
-
-								<br />przeslij obrazek<input type="file" name="file"
-									accept="image/*" onchange="loadFile(event)"></input>
-								<p>
-
-									<input type="submit" value="dodaj Event" /> --%>
-
+								<input type="submit"
+										value="dodaj Event" />
 							</div>
+
 						</form:form>
 					</div>
 
@@ -199,7 +193,6 @@
 						getEvents(offSet);
 					} else {
 					}
-					//  $("#dynData").text("");}
 				});
 
 		var addEventBox = document.getElementById("addEventBox");
@@ -234,7 +227,15 @@
 			}
 		};
 
+		var fBtn = document.getElementById("FilButton"),
+			startDate = document.getElementById("startDate"),
+			endDate = document.getElementById("endDate"),
+			city = document.getElementById("fcity");
 
+		
+		function filterEvent(){
+			window.location = '/filterEvent/?city='+city.value + '&startDate='+startDate.value + '&endDate='+endDate.value;
+			}
 	</script>
 
 </body>
