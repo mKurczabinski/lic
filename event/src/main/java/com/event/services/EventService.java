@@ -11,6 +11,8 @@ public interface EventService {
 	
 	public List<Event> getAll(int userId, int off, int limit);
 	
+	public void saveEvent(Event e);
+	
 	public List<Event> getCity(String miasto); 
 	
 	public List<String> listOfCity();

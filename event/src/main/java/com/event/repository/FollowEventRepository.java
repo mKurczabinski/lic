@@ -1,5 +1,7 @@
 package com.event.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +29,5 @@ public interface FollowEventRepository extends JpaRepository<FollowEvent, Intege
 	@Transactional
 	@Query(value = "delete from follow_event where user_id =:userId and event_id =:eventId", nativeQuery = true)
 	public void deleteFolow(@Param("userId") int userId, @Param("eventId") int eventId);
+
 }

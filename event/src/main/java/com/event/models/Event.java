@@ -15,7 +15,13 @@ public class Event {
 
 	private String name;
 
+	private int cityId;
+
+	@Transient
 	private String miasto;
+	
+	@Transient 
+	private int followed;
 
 	private Calendar createTime = Calendar.getInstance();
 
@@ -26,13 +32,12 @@ public class Event {
 	private String eventRange;
 
 	private String imageSource;
-	
+
 	private int follows;
 
 	@Transient
 	private String date; // Data do pobrania z formularza przy dodawaniu eventu, wykorzystana bo problem
 							// z zmianą string/date na Calendar
-	
 
 	public String getImageSource() {
 		return imageSource;
@@ -112,6 +117,22 @@ public class Event {
 
 	public void setFollows(int follows) {
 		this.follows = follows;
+	}
+
+	public int getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(int cityId) {
+		this.cityId = cityId;
+	}
+
+	public int getFollowed() {
+		return followed;
+	}
+
+	public void setFollowed(int followed) {
+		this.followed = followed;
 	}
 
 }

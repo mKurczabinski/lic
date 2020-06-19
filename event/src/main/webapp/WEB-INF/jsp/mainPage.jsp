@@ -76,16 +76,15 @@
 										|| ${ev.follows }<span class="glyphicon glyphicon-user"
 										style="color: grey"> </span> <a
 										href="/user/followEvent/${ev.id }" id="followButt${ev.id }"
-										class="btn btn-default" style="float: right"> obserwuj <c:forEach
-												var="evl" items="${followList }">
+										class="btn btn-default" style="float: right"> 
 												<c:choose>
-													<c:when test="${evl.eventId eq ev.id }">
-														<script>
-														document.getElementById('followButt'+${ev.id}).innerHTML="przestań obserwować";
-														</script>
+													<c:when test="${ev.followed eq 1}">
+														przestań obserwować
 													</c:when>
+													<c:otherwise>
+														obserwuj
+													</c:otherwise>
 												</c:choose>
-											</c:forEach>
 									</a>
 									</li>
 								</ul>

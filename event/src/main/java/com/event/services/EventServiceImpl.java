@@ -29,8 +29,8 @@ public class EventServiceImpl implements EventService{
 
 
 	@Override
-	public void addEvent(Event event) {
-		eventRepository.save(event);
+	public void addEvent(Event e) {
+		eventRepository.saveEvent(e);
 	}
 	
 	@Override
@@ -56,6 +56,12 @@ public class EventServiceImpl implements EventService{
 	@Override
 	public void addImageSource(String imageSource, int eventId) {
 		eventRepository.addImageSource(imageSource, eventId);
+	}
+
+	@Override
+	public void saveEvent(Event e) {
+		eventRepository.saveEvent(e);
+		
 	}
 	
 }

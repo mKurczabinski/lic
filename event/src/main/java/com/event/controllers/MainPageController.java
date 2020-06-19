@@ -24,10 +24,12 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.event.interfaces.dto.SearchParams;
+import com.event.models.City;
 import com.event.models.Event;
 import com.event.models.FollowEvent;
 import com.event.models.User;
 import com.event.repository.FollowEventRepository;
+import com.event.services.CityService;
 import com.event.services.EventService;
 import com.event.services.FollowEventService;
 
@@ -56,6 +58,9 @@ public class MainPageController implements HandlerExceptionResolver {
 	@Autowired
 	FollowEventService followEventService;
 
+	@Autowired
+	CityService cityServie;
+
 	final int LIMIT = 3;
 
 	@RequestMapping("/mainPage")
@@ -75,16 +80,21 @@ public class MainPageController implements HandlerExceptionResolver {
 		// event.getMiasto();
 
 		// List<String> sList = eventService.listOfCity();
-
+		List<Event> listaDoAktualizacji = null;
+		List<City> cityList = cityServie.getAll();
 		if (session.getAttribute("searchFilter") != null) {
 			String filtr = (String) session.getAttribute("searchFilter");
 			model.addAttribute("searchFilter", filtr);
-			model.addAttribute("eventList", getListsOfEvent(filtr, model, session));
+			listaDoAktualizacji = getListsOfEvent(filtr, model, session);
+			setLista(listaDoAktualizacji, u, cityList);
+			model.addAttribute("eventList", listaDoAktualizacji);
 
 			session.setAttribute("searchFilter", null);
-		} else
-			model.addAttribute("eventList", getListsOfEvent(null, model, session));
-
+		} else {
+			listaDoAktualizacji = getListsOfEvent(null, model, session);
+			setLista(listaDoAktualizacji, u, cityList);
+			model.addAttribute("eventList", listaDoAktualizacji);
+		}
 		model.addAttribute("followList", session.getAttribute("followList"));
 		List<FollowEvent> fel = (List<FollowEvent>) session.getAttribute("followList");
 
@@ -108,23 +118,34 @@ public class MainPageController implements HandlerExceptionResolver {
 		Date date = formatter.parse(dateInString);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		
+
 		event.setEventTime(calendar);
+
+		try {
+
+			int cityId = cityServie.getCityId(event.getMiasto());
+
+			event.setCityId(cityId);
+		} catch (Exception e) {
+			cityServie.saveCity(event.getMiasto());
+
+			event.setCityId(cityServie.getCityId(event.getMiasto()));
+		}
 		eventService.addEvent(event);
 
 		try {
 			String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-			
+
 			File oFile = new File("uploads/" + event.getId() + extension);
 			OutputStream os = new FileOutputStream(oFile);
 			InputStream inputStream = file.getInputStream();
 			IOUtils.copy(inputStream, os);
 			os.close();
 			inputStream.close();
-			
+
 			String imageSource = event.getId() + extension;
 			eventService.addImageSource(imageSource, event.getId());
-			
+
 		} catch (IOException e) {
 			// TODO: handle exception
 		}
@@ -139,7 +160,6 @@ public class MainPageController implements HandlerExceptionResolver {
 		return "redirect:mainPage";
 	}
 
-	
 	private List<Event> getListsOfEvent(String filter, Model model, HttpSession session) {
 		User u = (User) session.getAttribute("user");
 		List<Integer> followIdList = new ArrayList<Integer>();
@@ -148,20 +168,19 @@ public class MainPageController implements HandlerExceptionResolver {
 		int offset = 0;
 		if (filter == null || filter.equals("")) {
 			model.addAttribute("EventOffSet", offset);
-			eventList = eventService.getAll(u.getId(),offset, LIMIT);
-			for (Event ev : eventList) {
-				followIdList.add(ev.getId());
-			}
+			eventList = eventService.getAll(u.getId(), offset, LIMIT);
+			/*
+			 * for (Event ev : eventList) { followIdList.add(ev.geventListetId()); }
+			 */
 
-			session.setAttribute("followList", getFollow(u.getId(), followIdList));
 			return eventList;
 		} else {
 			eventList = eventService.getCity(filter);
-			for (Event ev : eventList) {
-				followIdList.add(ev.getId());
-			}
-			session.setAttribute("followList", getFollow(u.getId(), followIdList));
-			
+			/*
+			 * for (Event ev : eventList) { followIdList.add(ev.getId()); }
+			 * session.setAttribute("followList", getFollow(u.getId(), followIdList));
+			 */
+
 			return eventList;
 		}
 
@@ -173,47 +192,52 @@ public class MainPageController implements HandlerExceptionResolver {
 	}
 
 	@RequestMapping("dynLoad")
-	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response,HttpSession session, int offset,User u)
-			throws IOException {
-		
+	public void getDynamicLoad(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+			int offset, User u) throws IOException {
+
 		u = (User) session.getAttribute("user");
 		response.addHeader("Content-Type", "text/html; charset=utf-8");
 		PrintWriter pw = response.getWriter();
 		String result = "";
-		List<Event> lista = eventService.getAll(u.getId(),offset, LIMIT);
-		
+		List<Event> lista = eventService.getAll(u.getId(), offset, LIMIT);
+		List<City> cityList = cityServie.getAll();
+
+		setLista(lista, u, cityList);
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd / HH:mm");
+
 		
-		for (Event e : lista) {
-			
-			
-			result += "	<div class=\"eventDiv\">\r\n" + 
-					"							<div class=\"eventDivInfo\">\r\n" + 
-					"								<ul class=\"list-group\">\r\n" + 
-					"									<li class=\"list-group-item\">" +e.getName() +" || " + e.getMiasto()+ " ||\r\n" + 
-					"										"+e.getEventRange() +" || "+sdf.format(e.getEventTime().getTime())+" \r\n" + 
-					"										|| "+e.getFollows() + "<span class=\"glyphicon glyphicon-user\"\r\n" + 
-					"										style=\"color: grey\"> </span> <a\r\n" + 
-					"										href=\"/user/followEvent/"+e.getId()+"\" id=\"followButt "+e.getId() +"\"\r\n" + 
-					"										class=\"btn btn-default\" style=\"float: right\"> obserwuj <c:forEach\r\n" + 
-					"												var=\"evl\" items=\"${followList }\">\r\n" + 
-					"												<c:choose>\r\n" + 
-					"													<c:when test=\"${evl.eventId eq ev.id }\">\r\n" + 
-					"														<script>\r\n" + 
-					"														document.getElementById('followButt'+${ev.id}).innerHTML=\"przestań obserwować\";\r\n" + 
-					"														</script>\r\n" + 
-					"													</c:when>\r\n" + 
-					"												</c:choose>\r\n" + 
-					"											</c:forEach>\r\n" + 
-					"									</a>\r\n" + 
-					"									</li>\r\n" + 
-					"								</ul>\r\n" + 
-					"							</div>\r\n" + 
-					"							<img style=\"cursor: pointer\" id=\"imageDiv\" alt=\"\"\r\n" + 
-					"								src=\"uploads/"+  e.getImageSource() +"\"\r\n" + 
-					"								onClick=\"window.location.href='event/eventPage/"+e.getId()+"'\">\r\n" + 
-					"						</div>";
-		}
+		  for (Event e : lista) {
+		  
+		  result += "	<div class=\"eventDiv\">" +
+		  "							<div class=\"eventDivInfo\">" +
+		  "								<ul class=\"list-group\">" +
+		  "									<li class=\"list-group-item\">" +
+		  e.getName() + " || " + e.getMiasto() + " ||" +
+		  "										" + e.getEventRange() + " || " +
+		  sdf.format(e.getEventTime().getTime()) + " " +
+		  "										|| " + e.getFollows() +
+		  "<span class=\"glyphicon glyphicon-user\"" +
+		  "										style=\"color: grey\"> </span> <a"
+		  + "										href=\"/user/followEvent/" +
+		  e.getId() + "\" id=\"followButt " + e.getId() + "\"" +
+		  "										class=\"btn btn-default\" style=\"float: right\">";
+		  if (e.getFollowed() > 0) {
+			  result +="przestań obserwować";
+		  } else {
+			  result +="obserwuj";
+		  }
+		  result +=
+		  "									</a>" +
+		  "									</li>" +
+		  "								</ul>" +
+		  "							</div>" +
+		  "							<img style=\"cursor: pointer\" id=\"imageDiv\" alt=\"\""
+		  + "								src=\"uploads/" + e.getImageSource() +
+		  "\"" +
+		  "								onClick=\"window.location.href='event/eventPage/"
+		  + e.getId() + "'\">" + "						</div>"; }
+		 
 		pw.write(result);
 	}
 
@@ -236,29 +260,26 @@ public class MainPageController implements HandlerExceptionResolver {
 		}
 		return "redirect:/mainPage";
 	}
-	
 
 	@RequestMapping(value = "/filterEvent/")
 	public String filterEvent(@RequestParam(name = "city", required = false) String city,
-								@RequestParam(name = "startDate", required = false) String startDate,
-									@RequestParam(name = "endDate", required = false) String endDate,
-										User user, HttpSession session) throws ParseException {
-		
+			@RequestParam(name = "startDate", required = false) String startDate,
+			@RequestParam(name = "endDate", required = false) String endDate, User user, HttpSession session)
+			throws ParseException {
+
 		Calendar startCal = Calendar.getInstance();
 		Calendar endCal = Calendar.getInstance();
-		if(startDate!="") {
+		if (startDate != "") {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date sDate = sdf.parse(startDate);
-		startCal.setTime(sDate);
+			Date sDate = sdf.parse(startDate);
+			startCal.setTime(sDate);
 		}
-		if(endDate!="") {
+		if (endDate != "") {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date eDate = sdf.parse(endDate);
-		endCal.setTime(eDate);
+			Date eDate = sdf.parse(endDate);
+			endCal.setTime(eDate);
 		}
-		
-		
-		
+
 		return "redirect:/mainPage";
 	}
 
@@ -279,6 +300,22 @@ public class MainPageController implements HandlerExceptionResolver {
 			}
 		}
 		return followList;
+	}
+
+	private void setLista(List<Event> lista, User u, List<City> cityList) {
+		for (Event e : lista) {
+			if (followEventService.countFollow(u.getId(), e.getId()) > 0) {
+				e.setFollowed(1);
+			} else {
+				e.setFollowed(0);
+			}
+
+			for (City c : cityList) {
+				if (e.getCityId() == c.getId()) {
+					e.setMiasto(c.getCityName());
+				}
+			}
+		}
 	}
 
 }
